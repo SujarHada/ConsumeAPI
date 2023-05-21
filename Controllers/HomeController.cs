@@ -1,12 +1,11 @@
 ﻿using ConsumeWebAPI.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
+
 
 namespace ConsumeWebAPI.Controllers
 {
@@ -64,14 +63,16 @@ namespace ConsumeWebAPI.Controllers
                 address = user.address
             };
 
-            if (user.fullName != null)
+            if (user.fullName != null)  
             {
                 using (var client = new HttpClient())
                 {
+                    //put the ("+ put API name here ")
                     client.BaseAddress = new Uri(baseURL + "Contacts");
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
+                    
+                    // put the ("put action name here (exmaple what ever is after /Contacts )", "obj being passed")
                     HttpResponseMessage response = await client.PostAsJsonAsync("", obj);
 
                     if (response.IsSuccessStatusCode)
@@ -91,6 +92,13 @@ namespace ConsumeWebAPI.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public async Task<IActionResult> LogOut()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Access");
+
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

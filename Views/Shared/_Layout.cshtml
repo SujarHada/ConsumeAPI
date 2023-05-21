@@ -22,12 +22,21 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
+
+                       @* <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>*@
+
+                        <li class="nav-item">
+                            <a class="btn btn-outline-success mx-2 " asp-area="" asp-controller="Home" asp-action="AddUser">Add User</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AddUser">AddUser</a>
+                            <a class="btn btn-outline-danger mx-2 " asp-area="" asp-controller="Home" asp-action="DeleteUser">Delete User</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary mx-2" asp-area="" asp-controller="Home" asp-action="LogOut">Log Out</a>
                         </li>
 
                     </ul>
