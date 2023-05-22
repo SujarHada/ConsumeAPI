@@ -8,6 +8,7 @@
 <table class="table">
     <thead>
         <tr>
+
             <th>@Html.DisplayName("fullName")</th>
 
             <th>@Html.DisplayName("email")</th>
@@ -15,6 +16,7 @@
             <th>@Html.DisplayName("phone")</th>
 
             <th>@Html.DisplayName("address")</th>
+            <th> Action </th>
         </tr>
     </thead>
     <tbody>
@@ -22,10 +24,16 @@
         @foreach (var row in Model)
         {
             <tr>
+                <td></td>
                 <td>@row.fullName</td>
                 <td>@row.email</td>
                 <td>@row.phone</td>
                 <td>@row.address</td>
+                <td>
+                    <a class="btn btn-outline-danger" asp-action="DeleteContact" asp-route-id="@row.Id">Delete</a>
+
+                    <a class="btn btn-outline-primary" asp-action="Update" asp-route-id="@row.Id">Update</a>
+                </td>
             </tr>
         }
     </tbody>

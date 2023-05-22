@@ -1,0 +1,24 @@
+﻿@model ConsumeWebAPI.Models.ForUpdate
+
+@{
+}
+
+
+
+<h1> Update User</h1>
+
+<form asp-action="Update" method="post">
+    <label asp-for="fullName" class="control-label">Name</label>
+    <input asp-for="fullName" class="form-chontrol" />
+
+    <label asp-for="email" class="control-label">Email</label>
+    <input asp-for="email" class="form-chontrol" />
+
+    <label asp-for="phone" class="control-label">phone</label>
+    <input asp-for="phone" class="form-chontrol" />
+
+    <label asp-for="address" class="control-label">address</label>
+    <input asp-for="address" class="form-chontrol" />
+
+    <input type="submit" value="Update" class="btn btn-primary" />
+</form>

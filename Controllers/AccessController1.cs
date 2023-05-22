@@ -3,11 +3,18 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ConsumeWebAPI.Models;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+
 
 namespace ContactsAPI.Controllers
 {
     public class AccessController : Controller
     {
+
+        string baseURL = "https://localhost:7127/api/";
+
+
         public IActionResult Login()
         {
             ClaimsPrincipal claimUser = HttpContext.User;
@@ -19,34 +26,77 @@ namespace ContactsAPI.Controllers
             return View();
         }
 
+
+
+
         [HttpPost]
         public async Task<IActionResult> Login(VMLogin modelLogin)
         {
-            if (modelLogin.Email == "user@example.com" && modelLogin.PassWord == "123")
+
+
+
+            IList<admin> users = new List<admin>();
+
+            using (var client = new HttpClient())
             {
-                List<Claim> claims = new List<Claim>()
+                client.BaseAddress = new Uri(baseURL);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage response = await client.GetAsync("Access");
+
+                if (response.IsSuccessStatusCode)
                 {
-                    new Claim(ClaimTypes.NameIdentifier, modelLogin.Email),
-                    new Claim("OtherProperties","Example Role")
-                };
-
-                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                AuthenticationProperties properties = new AuthenticationProperties()
+                    string results = await response.Content.ReadAsStringAsync();
+                    users = JsonConvert.DeserializeObject<List<admin>>(results);
+                }
+                else
                 {
-
-                    AllowRefresh = true,
-                    IsPersistent = modelLogin.KeepLoggedIn
-
-                };
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity), properties);
-
-                return RedirectToAction("Index", "Home");
+                    Console.WriteLine("Error calling web API");
+                }
             }
-            ViewData["ValidateMessage"] = "user not found";
-            return View();
+
+
+
+            foreach (var user in users)
+            {
+                string useremail = user.email;
+                string userpw = user.passWord;
+
+                if (modelLogin.Email == useremail && modelLogin.PassWord == userpw)
+
+                {
+                        List<Claim> claims = new List<Claim>()
+                     {
+                        new Claim(ClaimTypes.NameIdentifier, modelLogin.Email),
+                        new Claim("OtherProperties","Example Role")
+                     };
+
+                        ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                        AuthenticationProperties properties = new AuthenticationProperties()
+                        {
+
+                            AllowRefresh = true,
+                            IsPersistent = modelLogin.KeepLoggedIn
+
+                        };
+
+                        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(claimsIdentity), properties);
+
+                        return RedirectToAction("Index", "Home");
+                   
+                }
+
+                else
+                {
+
+                    TempData["ValidateMessage"] = "User not found";
+                    return View();
+                }
+            }
+            return View(); 
         }
     }
 }
