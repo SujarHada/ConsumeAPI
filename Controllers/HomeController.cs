@@ -13,6 +13,8 @@ using System.Numerics;
 
 namespace ConsumeWebAPI.Controllers
 {
+
+    [Authorize]
   
     public class HomeController : Controller
     {
@@ -170,7 +172,7 @@ namespace ConsumeWebAPI.Controllers
                 client.BaseAddress = new Uri(baseURL + "Contacts/");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                HttpResponseMessage getData = await client.PostAsJsonAsync($"Update/",forUpdate);
+                HttpResponseMessage getData = await client.PutAsJsonAsync($"Update/{id}",forUpdate);
                 if (getData.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index", "Home");
